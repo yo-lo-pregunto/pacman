@@ -1,26 +1,32 @@
-from constants import N_NEIGHBORS
-from point import Point
+from typing import Self
+from constants import *
+from point import Vector
 import pygame
 
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 
 class Node():
-    def __init__(self, position: Point) -> None:
-        self.position = position
-        self.neighbors: list[Point | None] = [None for _ in range(N_NEIGHBORS)]
+    def __init__(self, x: int, y: int, index: int) -> None:
+        self.index = index
+        self.position = Vector(x, y)
+        self.neighbors: list[Self | None] = [None for _ in range(N_NEIGHBORS)]
 
-    def add_neighbor(self, neighboard: Point, location: int) -> None:
-        if location < N_NEIGHBORS:
+    def add_neighbor(self, neighboard: Self, location: int) -> None:
+        if not self.neighbors[location]:
             self.neighbors[location] = neighboard
+        else:
+            d1 = self.position.magnitude(neighboard.position)
+            d2 = self.position.magnitude(self.neighbors[location].position)
+            if d1 < d2:
+                self.neighbors[location] = neighboard
 
     def render(self, screen: pygame.Surface):
         line_start = self.position.asTuple()
+        pygame.draw.circle(screen, RED, self.position.asTuple(), 7)
         for n in range(N_NEIGHBORS):
             if self.neighbors[n] is not None:
-                line_end = self.neighbors[n].asTuple()
+                line_end = self.neighbors[n].position.asTuple()
                 pygame.draw.line(screen, WHITE, line_start, line_end)
-                pygame.draw.circle(screen, RED, self.position.asTuple(), 7)
                 pygame.draw.line(screen, (0, 255, 0), (365, 543), (365, 572))
                 pygame.draw.line(screen, (255, 0, 0), (328, 580), (356, 580))
-
