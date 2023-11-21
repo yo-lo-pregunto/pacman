@@ -29,42 +29,10 @@ keydown = False
 
 
 # Nodes
-"""
-1. 300, 558
-2. 600, 558
-3. 300, 200
-4. 600, 200
-5. 430, 350
-pacman point = 430,558
-distance between walls = 28
-"""
 maze = Maze()
-#node = Node(Point(430, 558))
-#node1 = Node(Point(300, 558))
-#node2 = Node(Point(600, 558))
-#node3 = Node(Point(300, 200))
-#node4 = Node(Point(600, 200))
-#node5 = Node(Point(430, 350))
-#node6 = Node(Point(600, 350))
-## Connect
-#node.add_neighbor(node1.position, RIGHT)
-#node.add_neighbor(node2.position, LEFT)
-#node.add_neighbor(node5.position, UP)
-#node1.add_neighbor(node.position, RIGHT)
-#node1.add_neighbor(node3.position, UP)
-#node3.add_neighbor(node1.position, DOWN)
-#node3.add_neighbor(node4.position, RIGHT)
-#node4.add_neighbor(node3.position, LEFT)
-#node4.add_neighbor(node6.position, DOWN)
-#node2.add_neighbor(node.position, LEFT)
-#node2.add_neighbor(node6.position, UP)
-#node5.add_neighbor(node.position, DOWN)
-#node5.add_neighbor(node6.position, RIGHT)
-#node6.add_neighbor(node5.position, LEFT)
-#node6.add_neighbor(node2.position, DOWN)
 
 # Player
-spawn = maze.get_spawn_loc(PACMAN)
+spawn = maze.get_spawn_loc("Pacman")
 pacman = Pacman(spawn, "./graphs/pac man & life counter & death/pac man/")
 
 while True:
@@ -77,14 +45,6 @@ while True:
     screen.blit(bg, (150, 100))
     screen.blit(header, header_rect)
 
-    #Node
-    #node.render(window)
-    #node1.render(window)
-    #node2.render(window)
-    #node3.render(window)
-    #node4.render(window)
-    #node5.render(window)
-    #node6.render(window)
     # Maze
     maze.render(screen)
 

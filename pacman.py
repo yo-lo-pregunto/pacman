@@ -4,11 +4,11 @@ from constants import *
 from entity import Entity
 from point import Vector
 from utils import load_tileset
+from node import Node
 import pygame
-import random
 
 class Pacman(Entity):
-    def __init__(self, node: Vector, direction: str,
+    def __init__(self, node: Node, direction: str,
                  size: Vector = Vector(TILE_W, TILE_H)) -> None:
 
         super().__init__(node, size)

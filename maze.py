@@ -4,20 +4,9 @@ from point import Vector
 
 class Maze():
     def __init__(self) -> None:
-        self.nodes: list[Node] = [] # Node list
-        self.spawn_loc: list[Node] = [] # Spawn location for each entity
-        nodes = [(292, 192),
-                (584, 192),
-                (422, 342),
-                (584, 342),
-                (292, 550),
-                (422, 550),
-                (584, 550)]
-        for i, loc in enumerate(nodes):
-            x, y = loc
-            self.nodes.append(Node(x, y, i))
+        self.spawn_loc = {} # Spawn location for each entity
+        self.createMaze()
         self.connect_maze()
-        self.spawn_loc.append(self.nodes[0])
 
     def connect_maze(self):
         for i in range(len(self.nodes)):
@@ -34,19 +23,37 @@ class Maze():
                         self.nodes[i].add_neighbor(self.nodes[j], RIGHT)
                     else:
                         self.nodes[i].add_neighbor(self.nodes[j], LEFT)
+        self.nodes[-1].neighbors[RIGHT] = self.nodes[-2]
+        self.nodes[-2].neighbors[LEFT] = self.nodes[-1]
+
 
     def render(self, screen):
         for n in self.nodes:
             n.render(screen)
 
-    def get_spawn_loc(self, entity_id: int) -> Node:
-        return self.spawn_loc[entity_id]
+    def get_spawn_loc(self, entity: str) -> Node:
+        return self.spawn_loc[entity]
     
     def createMaze(self):
-        self.nodes: list[Node] = []
+        self.nodes: list[Node] = [Node(422, 550, 0, [2, 3])]
+        self.spawn_loc["Pacman"] = self.nodes[0]
+        count = 1
         with open("./coordinates.txt") as f:
-            for i, line in enumerate(f.readlines()):
-                data = line.split()
-                self.nodes.append(Node(int(data[0]), int(data[1]), i))
-                print(data)
+            for line in f.readlines():
+                data = list(map(lambda x: int(x), line.split()))
+                x, y = data[0], data[1]
+                self.nodes.append(Node(x, y, count, data[2:]))
+                count += 1
+                if self.nodes[0].position.x != x:
+                    d = self.nodes[0].position.x - x
+                    c = invertConstrains(data[2:])
+                    self.nodes.append(Node(self.nodes[0].position.x + d, y, count, c))
+                    count += 1
+                if len(data) == 3:
+                    self.spawn_loc[data[2]] = self.nodes[-1]
 
+def invertConstrains(l: list[int]) -> list[int]:
+    for i in range(len(l)):
+        if l[i] == LEFT or l[i] == RIGHT:
+            l[i] ^= 1
+    return l
