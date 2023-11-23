@@ -13,11 +13,11 @@ PACMAN_SPAW_LOC = [WINDOWS_SIZE[0] // 2,  560]
 TILE_W = 16
 TILE_H = 16
 
-STOP = -1
 LEFT = 0
 RIGHT = 1
 UP = 2
 DOWN = 3
+STOP = 4
 
 # Entities
 PACMAN = 0

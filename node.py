@@ -11,7 +11,8 @@ class Node():
         self.index = index
         self.position = Vector(x, y)
         self.constrains = constrains
-        self.neighbors: list[Self | None] = [None for _ in range(N_NEIGHBORS)]
+        self.neighbors: list[Self | None] = [None for _ in range(N_NEIGHBORS + 1)]
+        self.neighbors[STOP] = self
 
     def add_neighbor(self, neighboard: Self, location: int) -> None:
         if location in self.constrains:

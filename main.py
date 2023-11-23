@@ -46,7 +46,7 @@ while True:
     screen.blit(header, header_rect)
 
     # Maze
-    maze.render(screen)
+    #maze.render(screen)
 
     # Pacman
     pacman.update(keydown)
