@@ -1,4 +1,3 @@
-from pygame.math import VectorIterator
 from animation import Animation
 from constants import *
 from entity import Entity
@@ -8,11 +7,10 @@ from node import Node
 import pygame
 
 class Pacman(Entity):
-    def __init__(self, node: Node, direction: str,
-                 size: Vector = Vector(TILE_W, TILE_H)) -> None:
+    def __init__(self, node: Node, directory: str,) -> None:
 
-        super().__init__(node, size)
-        self.tileset = load_tileset(direction, size)
+        super().__init__(node)
+        self.tileset = load_tileset(directory)
         self.animation = Animation(0, [*range(len(self.tileset))])
         self.image = self.tileset[0]
         self.old_direction = RIGHT
@@ -27,8 +25,6 @@ class Pacman(Entity):
                 DOWN: Vector(0, 1),
                 }
         self.speed = SPEED
-        self.velocity = Vector(-SPEED, 0)
-        self.edges = [self.direction, self.direction ^ 1]
 
     def get_input(self, keydown) -> int:
         if not keydown:

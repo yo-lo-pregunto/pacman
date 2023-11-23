@@ -5,7 +5,7 @@ from point import Vector
 class Maze():
     def __init__(self) -> None:
         self.spawn_loc = {} # Spawn location for each entity
-        self.createMaze()
+        self.create_maze()
         self.connect_maze()
 
     def connect_maze(self):
@@ -34,26 +34,39 @@ class Maze():
     def get_spawn_loc(self, entity: str) -> Node:
         return self.spawn_loc[entity]
     
-    def createMaze(self):
+    def create_maze(self):
         self.nodes: list[Node] = [Node(422, 550, 0, [2, 3])]
         self.spawn_loc["Pacman"] = self.nodes[0]
         count = 1
         with open("./coordinates.txt") as f:
             for line in f.readlines():
-                data = list(map(lambda x: int(x), line.split()))
+                data, entities = parse_line(line)
                 x, y = data[0], data[1]
                 self.nodes.append(Node(x, y, count, data[2:]))
                 count += 1
+                if entities:
+                    self.spawn_loc[entities.pop(0)] = self.nodes[-1]
                 if self.nodes[0].position.x != x:
                     d = self.nodes[0].position.x - x
-                    c = invertConstrains(data[2:])
+                    c = invert_constrains(data[2:])
                     self.nodes.append(Node(self.nodes[0].position.x + d, y, count, c))
                     count += 1
-                if len(data) == 3:
-                    self.spawn_loc[data[2]] = self.nodes[-1]
+                    if entities:
+                        self.spawn_loc[entities.pop(0)] = self.nodes[-1]
 
-def invertConstrains(l: list[int]) -> list[int]:
+def invert_constrains(l: list[int]) -> list[int]:
     for i in range(len(l)):
         if l[i] == LEFT or l[i] == RIGHT:
             l[i] ^= 1
     return l
+
+def parse_line(line: str) -> tuple[list[int], list[str]]:
+    ints = []
+    names = []
+    for string in line.split():
+        if string.isdigit():
+            ints.append(int(string))
+        else:
+            names.append(string)
+    return ints, names
+
