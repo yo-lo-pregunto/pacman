@@ -19,6 +19,9 @@ UP = 2
 DOWN = 3
 STOP = 4
 
+# Colors
+WHITE = (255, 255, 255)
+
 # Entities
 PACMAN = 0
 

@@ -7,6 +7,8 @@ class Maze():
         self.spawn_loc = {} # Spawn location for each entity
         self.create_maze()
         self.connect_maze()
+        self.nodes[-1].is_portal = True
+        self.nodes[-2].is_portal = True
 
     def connect_maze(self):
         for i in range(len(self.nodes)):
@@ -35,8 +37,10 @@ class Maze():
         return self.spawn_loc[entity]
     
     def create_maze(self):
+        # First Node is Pacman spawn location
         self.nodes: list[Node] = [Node(422, 550, 0, [2, 3])]
         self.spawn_loc["Pacman"] = self.nodes[0]
+        # Nodes Id
         count = 1
         with open("./coordinates.txt") as f:
             for line in f.readlines():
@@ -46,6 +50,7 @@ class Maze():
                 count += 1
                 if entities:
                     self.spawn_loc[entities.pop(0)] = self.nodes[-1]
+                    self.nodes[-1].ghost_home = True
                 if self.nodes[0].position.x != x:
                     d = self.nodes[0].position.x - x
                     c = invert_constrains(data[2:])
@@ -69,4 +74,3 @@ def parse_line(line: str) -> tuple[list[int], list[str]]:
         else:
             names.append(string)
     return ints, names
-

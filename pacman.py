@@ -4,6 +4,7 @@ from entity import Entity
 from point import Vector
 from utils import load_tileset
 from node import Node
+from pill import Pill
 import pygame
 
 class Pacman(Entity):
@@ -72,7 +73,7 @@ class Pacman(Entity):
             self.source, self.target = self.target, self.source
             self.find_next_direction()
         else:
-            if self.target.neighbors[direction] and direction != STOP:
+            if self.target.neighbors[direction] and direction != STOP and not self.target.neighbors[direction].ghost_home:
                 self.next_direction = direction
                 self.old_direction = self.direction
 
@@ -80,6 +81,10 @@ class Pacman(Entity):
 
         if d <= self.speed:
             self.source, self.target = self.target, self.target.neighbors[self.next_direction]
+            if self.source.is_portal:
+                self.source = self.target
+                self.target = self.source.neighbors[self.next_direction]
+                self.position = self.source.position.copy()
             if self.next_direction != STOP:
                 self.old_direction = self.next_direction
             self.direction = self.next_direction
@@ -90,4 +95,13 @@ class Pacman(Entity):
             self.next_direction = self.direction
         else:
             self.next_direction = STOP
+
+    def eat_pill(self, pill: Pill) -> bool:
+        if pill.visible:
+            return self.check_collision(pill.position)
+        return False
+
+    def check_collision(self, obj: Vector) -> bool:
+        distance = self.position.magnitude(obj)
+        return distance < self.size.x
 

@@ -13,6 +13,8 @@ class Node():
         self.constrains = constrains
         self.neighbors: list[Self | None] = [None for _ in range(N_NEIGHBORS + 1)]
         self.neighbors[STOP] = self
+        self.is_portal = False
+        self.ghost_home = False
 
     def add_neighbor(self, neighboard: Self, location: int) -> None:
         if location in self.constrains:

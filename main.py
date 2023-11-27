@@ -5,6 +5,9 @@ from maze import Maze
 from node import Node
 import pygame
 
+from pill import PillGroup
+from text import TextGroup
+
 # Image path
 BACKGROUND = "./graphs/maze_2.png"
 
@@ -15,10 +18,6 @@ screen = pygame.display.set_mode(WINDOWS_SIZE, pygame.NOFRAME)
 clock = pygame.time.Clock()
 font = pygame.font.Font("./fonts/FiraCodeNerdFont-Bold.ttf", 50)
 
-# Header
-header = font.render(WINDOWS_TITLE, False, "#fdff00")
-header_rect = header.get_rect(center = HEADER_LOC)
-
 pygame.display.set_caption(WINDOWS_TITLE)
 
 # Background
@@ -26,7 +25,6 @@ bg = pygame.image.load(BACKGROUND).convert()
 bg = pygame.transform.scale(bg, IMAGE_SIZE)
 
 keydown = False
-
 
 # Nodes
 maze = Maze()
@@ -47,36 +45,58 @@ ghost2 = Ghost(spawn, "./graphs/ghost/orange ghost/")
 spawn = maze.get_spawn_loc("Petra")
 ghost3 = Ghost(spawn, "./graphs/ghost/pink ghost/")
 
+pill_group = PillGroup(maze.nodes)
+
+text = TextGroup()
+
+pause = True
+
+def render():
+    global screen
+    screen.blit(bg, (150, 100))
+    pill_group.render(screen)
+    pacman.render(screen)
+    ghost.render(screen)
+    ghost1.render(screen)
+    ghost2.render(screen)
+    ghost3.render(screen)
+    text.render(screen)
+    pygame.display.update()
+
+
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
         if event.type == pygame.KEYDOWN:
             keydown = True
+        if event.type == pygame.KEYDOWN and pygame.K_SPACE == event.key:
+            pause = not pause
 
-    screen.blit(bg, (150, 100))
-    screen.blit(header, header_rect)
 
-    # Maze
-    maze.render(screen)
+    if not pause:
+        # Maze
+        #maze.render(screen)
 
-    # Pacman
-    pacman.update(keydown)
-    pacman.render(screen)
+        for pill in pill_group.pills:
+            if pacman.eat_pill(pill):
+                pill.visible = False
+                text.update_score(pill.points)
 
-    # Ghosts
-    ghost.update()
-    ghost.render(screen)
+        # Pacman
+        pacman.update(keydown)
 
-    ghost1.update()
-    ghost1.render(screen)
+        # Ghosts
+        ghost.update()
 
-    ghost2.update()
-    ghost2.render(screen)
+        ghost1.update()
 
-    ghost3.update()
-    ghost3.render(screen)
+        ghost2.update()
 
-    keydown = False
-    pygame.display.update()
+        ghost3.update()
+
+        keydown = False
+
+    render()
     clock.tick(FRAME_RATE)

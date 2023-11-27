@@ -52,11 +52,16 @@ class Ghost(Entity):
 
         if d <= self.speed:
             self.source  = self.target
-            direction = random.randint(0, 4)
-            while not self.source.neighbors[direction]:
+            if self.source.is_portal:
+                self.source = self.source.neighbors[self.direction]
+                self.target = self.source.neighbors[self.direction]
+                self.position = self.source.position.copy()
+            else:
                 direction = random.randint(0, 4)
-            self.target = self.source.neighbors[direction]
-            self.direction = direction
+                while not self.source.neighbors[direction]:
+                    direction = random.randint(0, 4)
+                self.target = self.source.neighbors[direction]
+                self.direction = direction
 
 
 
