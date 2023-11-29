@@ -50,6 +50,7 @@ pause = True
 def render():
     global screen
     screen.blit(bg, (150, 100))
+    #maze.render(screen)
     pill_group.render(screen)
     pacman.render(screen)
     ghosts.render(screen)
@@ -67,10 +68,10 @@ while True:
         if event.type == pygame.KEYDOWN and pygame.K_SPACE == event.key:
             pause = not pause
 
+    pill_group.update()
 
     if not pause:
         # Maze
-        #maze.render(screen)
 
         for pill in pill_group.pills:
             if pacman.eat_pill(pill):
@@ -86,6 +87,7 @@ while True:
             if pacman.check_collision(ghost.position):
                 print("Looser")
                 exit()
+
 
         keydown = False
 

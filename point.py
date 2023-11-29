@@ -6,6 +6,15 @@ class Vector():
         self.x = x
         self.y = y
 
+    def __getitem__(self, index: int):
+        return self.y if index else self.x
+
+    def __setitem__(self, index: int, value):
+        if index:
+            self.y = value
+        else:
+            self.x = value
+
     def __add__(self, point: Self) -> Self:
         return Vector(self.x + point.x, self.y + point.y)
 
@@ -24,16 +33,16 @@ class Vector():
         return self.__div__(scalar)
 
     def __eq__(self, point: Self) -> bool:
-        if self.x == point.x and self.y == point.y:
-            return True
-        else:
-            return False
+        return self.x == point.x and self.y == point.y
 
     def copy(self) -> Self:
         return Vector(self.x, self.y)
 
     def asTuple(self) -> tuple[int, int]:
         return self.x, self.y
+
+    def asList(self) -> list[int]:
+        return [self.x, self.y]
 
     def magnitude(self, point: Self) -> int:
         vec = self.__sub__(point)

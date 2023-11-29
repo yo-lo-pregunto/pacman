@@ -15,6 +15,7 @@ class Ghost(Entity):
         self.tileset = load_tileset(directory)
         self.animation = Animation(0, [range(len(self.tileset))])
         self.direction = STOP
+        self.image = self.tileset[0]
         self.old_direction = STOP
         self.target = self.source.neighbors[self.direction]
         self.find_next_direction()
@@ -33,7 +34,6 @@ class Ghost(Entity):
 
         if self.old_direction == LEFT or self.direction == LEFT:
             new_image = pygame.transform.flip(new_image, True, False)
-
 
         return new_image
 

@@ -38,7 +38,7 @@ class Maze():
     
     def create_maze(self):
         # First Node is Pacman spawn location
-        self.nodes: list[Node] = [Node(422, 550, 0, [2, 3])]
+        self.nodes: list[Node] = [Node(432, 558, 0, [2, 3])]
         self.spawn_loc["Pacman"] = self.nodes[0]
         # Nodes Id
         count = 1
@@ -58,6 +58,7 @@ class Maze():
                     count += 1
                     if entities:
                         self.spawn_loc[entities.pop(0)] = self.nodes[-1]
+                        self.nodes[-1].ghost_home = True
 
 def invert_constrains(l: list[int]) -> list[int]:
     for i in range(len(l)):

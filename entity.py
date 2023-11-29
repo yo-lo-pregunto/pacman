@@ -22,4 +22,5 @@ class Entity():
 
     def render(self, screen: pygame.Surface):
         if self.image:
-            screen.blit(self.image, self.position.asTuple())
+            adjust = self.position - (self.size / 2)
+            screen.blit(self.image, adjust.asTuple())

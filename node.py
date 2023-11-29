@@ -29,7 +29,7 @@ class Node():
 
     def render(self, screen: pygame.Surface):
         line_start = self.position.asTuple()
-        pygame.draw.circle(screen, RED, self.position.asTuple(), 7)
+        pygame.draw.circle(screen, RED, self.position.asTuple(), 8)
         for n in range(N_NEIGHBORS):
             if self.neighbors[n] is not None:
                 line_end = self.neighbors[n].position.asTuple()
