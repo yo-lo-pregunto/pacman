@@ -38,6 +38,5 @@ class TextGroup():
     def update_score(self, value):
         new_value = int(self.texts["Score"].text) + value
         self.texts["Score"].set_text(str(new_value).zfill(8))
-        print(new_value)
 
             

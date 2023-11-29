@@ -1,5 +1,5 @@
 from constants import *
-from ghost import Ghost
+from ghost import Ghosts
 from pacman import Pacman
 from maze import Maze
 from node import Node
@@ -33,17 +33,13 @@ maze = Maze()
 spawn = maze.get_spawn_loc("Pacman")
 pacman = Pacman(spawn, "./graphs/pac man & life counter & death/pac man/")
 
-spawn = maze.get_spawn_loc("Huayra")
-ghost = Ghost(spawn, "./graphs/ghost/blue ghost/")
+spawn = []
+spawn.append(maze.get_spawn_loc("Huayra"))
+spawn.append(maze.get_spawn_loc("Pancracio"))
+spawn.append(maze.get_spawn_loc("Tiburcio"))
+spawn.append(maze.get_spawn_loc("Petra"))
 
-spawn = maze.get_spawn_loc("Pancracio")
-ghost1 = Ghost(spawn, "./graphs/ghost/red ghost/")
-
-spawn = maze.get_spawn_loc("Tiburcio")
-ghost2 = Ghost(spawn, "./graphs/ghost/orange ghost/")
-
-spawn = maze.get_spawn_loc("Petra")
-ghost3 = Ghost(spawn, "./graphs/ghost/pink ghost/")
+ghosts = Ghosts(spawn)
 
 pill_group = PillGroup(maze.nodes)
 
@@ -56,10 +52,7 @@ def render():
     screen.blit(bg, (150, 100))
     pill_group.render(screen)
     pacman.render(screen)
-    ghost.render(screen)
-    ghost1.render(screen)
-    ghost2.render(screen)
-    ghost3.render(screen)
+    ghosts.render(screen)
     text.render(screen)
     pygame.display.update()
 
@@ -88,13 +81,11 @@ while True:
         pacman.update(keydown)
 
         # Ghosts
-        ghost.update()
-
-        ghost1.update()
-
-        ghost2.update()
-
-        ghost3.update()
+        for ghost in ghosts.ghosts.values():
+            ghost.update()
+            if pacman.check_collision(ghost.position):
+                print("Looser")
+                exit()
 
         keydown = False
 

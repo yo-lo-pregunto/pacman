@@ -63,5 +63,16 @@ class Ghost(Entity):
                 self.target = self.source.neighbors[direction]
                 self.direction = direction
 
+class Ghosts():
+    def __init__(self, nodes: list[Node]) -> None:
+        self.ghosts: dict[str, Ghost] = {}
+        self.ghosts["Huayra"] = Ghost(nodes[0], "./graphs/ghost/blue ghost/")
+        self.ghosts["Pancracio"] = Ghost(nodes[1], "./graphs/ghost/orange ghost/")
+        self.ghosts["Tuburcio"] = Ghost(nodes[2], "./graphs/ghost/red ghost/")
+        self.ghosts["Petra"] = Ghost(nodes[3], "./graphs/ghost/pink ghost/")
 
+    def render(self, screen: pygame.Surface) -> None:
+        for ghost in self.ghosts.values():
+            ghost.render(screen)
 
+        
