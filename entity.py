@@ -13,6 +13,14 @@ class Entity():
         self.image = None
         self.direction: int = STOP
         self.orientation = {}
+        self.home = node
+        self.compass = {
+                STOP: Vector(0, 0),
+                LEFT: Vector(-1, 0),
+                RIGHT: Vector(1, 0),
+                UP: Vector(0, -1),
+                DOWN: Vector(0, 1),
+                }
 
     def set_position(self):
         self.position = self.source.position.copy()

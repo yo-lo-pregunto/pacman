@@ -10,22 +10,22 @@ import pygame
 class Pacman(Entity):
     def __init__(self, node: Node, directory: str,) -> None:
 
-        super().__init__(node)
+        super().__init__(node, Vector(12, 12))
         self.tileset = load_tileset(directory)
         self.animation = Animation(0, [*range(len(self.tileset))])
         self.image = self.tileset[0]
+        self.reset()
+        self.speed = SPEED
+
+    def reset(self):
+        self.animation.reset()
+        self.image = self.tileset[0]
+        self.position = self.home.position.copy()
+        self.source = self.home
         self.old_direction = RIGHT
-        self.direction = RIGHT
+        self.direction = self.old_direction
         self.target = self.source.neighbors[self.direction]
         self.find_next_direction()
-        self.compass = {
-                STOP: Vector(0, 0),
-                LEFT: Vector(-1, 0),
-                RIGHT: Vector(1, 0),
-                UP: Vector(0, -1),
-                DOWN: Vector(0, 1),
-                }
-        self.speed = SPEED
 
     def get_input(self, keydown) -> int:
         if not keydown:

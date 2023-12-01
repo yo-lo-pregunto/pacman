@@ -44,12 +44,14 @@ ghosts = Ghosts(spawn)
 pill_group = PillGroup(maze.nodes)
 
 text = TextGroup()
+text.show_text("Ready!")
 
 pause = True
+lives = 5
 
 def render():
     global screen
-    screen.blit(bg, (150, 100))
+    screen.blit(bg, (0, 100))
     #maze.render(screen)
     pill_group.render(screen)
     pacman.render(screen)
@@ -57,6 +59,20 @@ def render():
     text.render(screen)
     pygame.display.update()
 
+def reset_game():
+    global pause
+    pacman.reset()
+    ghosts.reset()
+    text.show_text("Ready!")
+    pause = True
+
+def restart_game():
+    global lives
+    lives = 5
+    reset_game()
+    text.reset_score()
+    text.update_lives(lives)
+    pill_group.restart()
 
 
 while True:
@@ -67,27 +83,45 @@ while True:
             keydown = True
         if event.type == pygame.KEYDOWN and pygame.K_SPACE == event.key:
             pause = not pause
+            if lives:
+                if pause == False:
+                    text.hide()
+                else:
+                    text.show_text("Pause!")
+            else:
+                restart_game()
+
 
     pill_group.update()
 
     if not pause:
-        # Maze
 
         for pill in pill_group.pills:
             if pacman.eat_pill(pill):
                 pill.visible = False
                 text.update_score(pill.points)
-
-        # Pacman
-        pacman.update(keydown)
+                if pill.type  == POWER:
+                    ghosts.state(PREY)
+                    ghosts.reset_points()
 
         # Ghosts
         for ghost in ghosts.ghosts.values():
             ghost.update()
             if pacman.check_collision(ghost.position):
-                print("Looser")
-                exit()
+                if ghost.state == HUNTER:
+                    lives -= 1
+                    text.update_lives(lives)
+                    if lives:
+                        reset_game()
+                    else:
+                        pause = True
+                        text.show_text("Gameover!")
+                else:
+                    ghost.go_home()
+                    ghosts.update_points()
 
+        # Pacman
+        pacman.update(keydown)
 
         keydown = False
 

@@ -38,7 +38,7 @@ class Maze():
     
     def create_maze(self):
         # First Node is Pacman spawn location
-        self.nodes: list[Node] = [Node(432, 558, 0, [2, 3])]
+        self.nodes: list[Node] = [Node(432-150, 558, 0, [2, 3])]
         self.spawn_loc["Pacman"] = self.nodes[0]
         # Nodes Id
         count = 1
@@ -46,6 +46,7 @@ class Maze():
             for line in f.readlines():
                 data, entities = parse_line(line)
                 x, y = data[0], data[1]
+                x -= 150
                 self.nodes.append(Node(x, y, count, data[2:]))
                 count += 1
                 if entities:

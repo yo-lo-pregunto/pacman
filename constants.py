@@ -2,7 +2,7 @@ from typing import TypeAlias
 
 Size: TypeAlias = tuple[int, int]
 
-WINDOWS_SIZE = (860, 820)
+WINDOWS_SIZE = (560, 720)
 IMAGE_SIZE = (560, 620)
 WINDOWS_TITLE = "󰮯 PAC - MAN 󰮯"
 
@@ -34,3 +34,7 @@ N_NEIGHBORS = 4
 # Pellets
 NORMAL = 0
 POWER = 1
+
+# STATES
+HUNTER = 0
+PREY = 1

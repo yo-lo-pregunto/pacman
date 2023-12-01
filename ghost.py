@@ -13,44 +13,53 @@ class Ghost(Entity):
         random.seed(datetime.now().timestamp())
         super().__init__(node)
         self.tileset = load_tileset(directory)
-        self.animation = Animation(0, [range(len(self.tileset))])
-        self.direction = STOP
-        self.image = self.tileset[0]
-        self.old_direction = STOP
-        self.target = self.source.neighbors[self.direction]
-        self.find_next_direction()
-        self.compass = {
-                STOP: Vector(0, 0),
-                LEFT: Vector(-1, 0),
-                RIGHT: Vector(1, 0),
-                UP: Vector(0, -1),
-                DOWN: Vector(0, 1),
-                }
+        self.reset()
         self.speed = SPEED
+        self.prey_time = FRAME_RATE * 7
+        self.prey_count = 0
+        self.points = 200
+
+    def reset(self):
+        self.state = HUNTER
+        self.image = self.tileset[self.state]
+        self.position = self.home.position.copy()
+        self.direction = STOP
+        self.source = self.home
+        self.target = self.source.neighbors[self.direction]
 
     def update_image(self) -> pygame.Surface:
-        new_frame = self.animation.get_frame()
-        new_image = self.tileset[new_frame]
+        new_image = self.tileset[self.state]
 
-        if self.old_direction == LEFT or self.direction == LEFT:
+        if self.direction == LEFT:
             new_image = pygame.transform.flip(new_image, True, False)
 
         return new_image
 
-    def find_next_direction(self):
-        if self.target.neighbors[self.direction]:
-            self.next_direction = self.direction
-        else:
-            self.next_direction = STOP
+    def hunting(self):
+        self.speed = SPEED
+        self.state = HUNTER
+
+    def prey(self):
+        self.speed = SPEED - 1
+        self.state = PREY
+
+    def update_mode(self):
+        if self.state == HUNTER:
+            return
+        self.prey_count += 1
+        if self.prey_count > self.prey_time:
+            self.hunting()
 
     def update(self):
         self.position += self.compass[self.direction] * self.speed
+        self.update_mode()
         image = self.update_image()
         self.image = image
 
         d = self.position.magnitude(self.target.position)
 
         if d <= self.speed:
+            self.position = self.target.position.copy()
             self.source  = self.target
             if self.source.is_portal:
                 self.source = self.source.neighbors[self.direction]
@@ -62,6 +71,13 @@ class Ghost(Entity):
                     direction = random.randint(0, 4)
                 self.target = self.source.neighbors[direction]
                 self.direction = direction
+
+    def go_home(self):
+        self.position = self.home.position.copy()
+        self.direction = STOP
+        self.source = self.home
+        self.target = self.source.neighbors[self.direction]
+        self.hunting()
 
 class Ghosts():
     def __init__(self, nodes: list[Node]) -> None:
@@ -75,4 +91,21 @@ class Ghosts():
         for ghost in self.ghosts.values():
             ghost.render(screen)
 
-        
+    def state(self, state):
+        for ghost in self.ghosts.values():
+            if state == HUNTER:
+                ghost.hunting()
+            else:
+                ghost.prey()
+
+    def update_points(self):
+        for ghost in self.ghosts.values():
+            ghost.points *= 2
+
+    def reset_points(self):
+        for ghost in self.ghosts.values():
+            ghost.points = 200
+
+    def reset(self):
+        for ghost in self.ghosts.values():
+            ghost.reset()

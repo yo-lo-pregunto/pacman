@@ -11,7 +11,7 @@ class Pill():
     RADIUS = 2
     DIAMETER = RADIUS * 2
     SEP = 5.5
-    TOTAL_SIZE = DIAMETER + SEP * 2
+    TOTAL_SIZE = int(DIAMETER + SEP * 2)
     def __init__(self, x: int, y: int) -> None:
         self.position = Vector(x, y)
         self.neighbors: list[Self | None] = [None for _ in range(N_NEIGHBORS + 1)]
@@ -27,7 +27,8 @@ class Pill():
             pygame.draw.circle(screen, self.color, self.position.asTuple(), self.radius)
 
 class PowerPill(Pill):
-    PP_LOCATION = [Vector(194, 145), Vector(194, 676), Vector(670, 145), Vector(670, 676)]
+    PP_LOCATION = [Vector(194-150, 145), Vector(194-150, 676),
+                   Vector(670-150, 145), Vector(670-150, 676)]
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y)
         self.points = 100
@@ -79,17 +80,16 @@ class PillGroup():
             pill.render(screen)
 
     def add_pill(self, node: Node, direction: int, axis: int = 0) -> None:
-        delta = node.neighbors[direction].position - node.position
-        delta[axis] -= TILE_W
-        n = int(delta[axis] // Pill.TOTAL_SIZE)
         position = node.position.asList()
         target = node.neighbors[direction].position.asTuple()
-        for _ in range(n + 2):
-            position[axis] += Pill.TOTAL_SIZE
-            if position[axis] > target[axis] - (TILE_W / 2):
-                break
+        position[axis] += Pill.TOTAL_SIZE
+        while position[axis] < target[axis] - (TILE_W / 2):
             self.pills.append(Pill(*position))
+            position[axis] += Pill.TOTAL_SIZE
 
     def update(self):
         for pp in self.power_pills:
             pp.update()
+    def restart(self):
+        for pill in self.pills:
+            pill.visible = True
